@@ -22,7 +22,7 @@ int main() {
         }
         
         if (strncmp(input, "echo", strlen("echo")) == 0) {
-           printf("%s\n", input + 5);
+           printf("%s\n", input + strlen("echo") + 1);
            continue;
          }
         
