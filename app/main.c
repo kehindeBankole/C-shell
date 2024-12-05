@@ -21,6 +21,11 @@ int main() {
             exit(0);
         }
         
+        if (strncmp(input, "echo", strlen("echo")) == 0) {
+           printf("%s\n", input + 5);
+           continue;
+         }
+        
          printf("%s: command not found\n", input);
 
     }
