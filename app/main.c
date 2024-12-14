@@ -32,7 +32,7 @@ int main() {
         char* command = strtok(input, " ");
         char* argument = strtok(NULL, " ");
         
-        
+       // printf("%s" , argument);
         if(!strcmp(input , "exit 0")){
             exit(0);
         }else if (strncmp(input, "echo", strlen("echo")) == 0) {
@@ -43,10 +43,13 @@ int main() {
                 
                 if (strcmp(argument, built_in_commands[x]) == 0) {
                     printf("%s is a shell builtin\n" , argument);
-                    return 1;
+                    //argument[strlen(argument) - 1] = '\0';
+                    continue;
+                }else{
+                    printf("%s: not found\n", argument);
                 }
             }
-            printf("%s not found\n", argument);
+   
  
         }else{
             printf("%s: command not found\n", input);
