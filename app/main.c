@@ -10,8 +10,7 @@ int main() {
     
     // Calculate the number of elements in the array
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
-    
-    //      // Loop through the array
+
     //      for (int x = 0; x < num_commands; x++) {
     //          printf("Command %i: %s\n", x, built_in_commands[x]);
     //      }
