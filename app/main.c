@@ -46,7 +46,7 @@ int main() {
                     return 1;
                 }
             }
-            printf("%s: not found\n", argument);
+            printf("%s not found\n", argument);
  
         }else{
             printf("%s: command not found\n", input);
