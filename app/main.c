@@ -46,12 +46,13 @@ int main() {
             for (int x = 0; x < num_commands; x++) {
                 
                 if (strcmp(argument, built_in_commands[x]) == 0) {
-                    printf("%s is a shell builtin \n" , argument);
+                    printf("%s is a shell builtin\n" , argument);
                     continue;
                     
                 }
             }
-         
+            printf("%s: command not found\n", input);
+            continue;
         }
         
         
