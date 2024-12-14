@@ -8,7 +8,6 @@ int main() {
     bool canRepeat = true;
     char* built_in_commands[] = {"exit" , "type" , "echo"};
     
-    // Calculate the number of elements in the array
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
 
     //      for (int x = 0; x < num_commands; x++) {
