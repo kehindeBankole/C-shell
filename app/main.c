@@ -39,17 +39,19 @@ int main() {
             printf("%s\n", input + strlen("echo") + 1);
             continue;
         }else if (strcmp(command , "type") == 0) {
+            bool found = false;
             for (int x = 0; x < num_commands; x++) {
                 
                 if (strcmp(argument, built_in_commands[x]) == 0) {
+                    found = true;
                     printf("%s is a shell builtin\n" , argument);
                     //argument[strlen(argument) - 1] = '\0';
                     continue;
-                }else{
-                    printf("%s: not found\n", argument);
                 }
             }
-   
+            if(!found){
+                printf("%s: not found\n", argument);
+            }
  
         }else{
             printf("%s: command not found\n", input);
