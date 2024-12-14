@@ -43,12 +43,11 @@ int main() {
                 
                 if (strcmp(argument, built_in_commands[x]) == 0) {
                     printf("%s is a shell builtin\n" , argument);
-                    continue;
-                    
+                    return 1;
                 }
             }
-            printf("%s: command not found\n", argument);
-            continue;
+            printf("%s: not found\n", argument);
+ 
         }else{
             printf("%s: command not found\n", input);
         }
