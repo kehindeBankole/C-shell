@@ -28,21 +28,17 @@ int main() {
         
         input[strlen(input) - 1] = '\0';
         
-        if(!strcmp(input , "exit 0")){
-            exit(0);
-        }
-        
-        if (strncmp(input, "echo", strlen("echo")) == 0) {
-            printf("%s\n", input + strlen("echo") + 1);
-            continue;
-        }
-        
         
         char* command = strtok(input, " ");
         char* argument = strtok(NULL, " ");
         
         
-        if (strcmp(command , "type") == 0) {
+        if(!strcmp(input , "exit 0")){
+            exit(0);
+        }else if (strncmp(input, "echo", strlen("echo")) == 0) {
+            printf("%s\n", input + strlen("echo") + 1);
+            continue;
+        }else if (strcmp(command , "type") == 0) {
             for (int x = 0; x < num_commands; x++) {
                 
                 if (strcmp(argument, built_in_commands[x]) == 0) {
@@ -51,12 +47,11 @@ int main() {
                     
                 }
             }
-            printf("%s: command not found\n", input);
+            printf("%s: command not found\n", argument);
             continue;
+        }else{
+            printf("%s: command not found\n", input);
         }
-        
-        
-        printf("%s: command not found\n", input);
         
     }
     return 0;
