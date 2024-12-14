@@ -28,17 +28,21 @@ int main() {
         
         input[strlen(input) - 1] = '\0';
         
-        
-        char* command = strtok(input, " ");
-        char* argument = strtok(NULL, " ");
+
         
        // printf("%s" , argument);
         if(!strcmp(input , "exit 0")){
+            printf("%i" , 22);
             exit(0);
         }else if (strncmp(input, "echo", strlen("echo")) == 0) {
             printf("%s\n", input + strlen("echo") + 1);
-            continue;
-        }else if (strcmp(command , "type") == 0) {
+//            continue;
+        }else if (strncmp(input, "type", strlen("type")) == 0) {
+            
+            
+            char* command = strtok(input, " ");
+            char* argument = strtok(NULL, " ");
+            
             bool found = false;
             for (int x = 0; x < num_commands; x++) {
                 
