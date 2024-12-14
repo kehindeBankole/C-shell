@@ -32,7 +32,6 @@ int main() {
         
        // printf("%s" , argument);
         if(!strcmp(input , "exit 0")){
-            printf("%i" , 22);
             exit(0);
         }else if (strncmp(input, "echo", strlen("echo")) == 0) {
             printf("%s\n", input + strlen("echo") + 1);
