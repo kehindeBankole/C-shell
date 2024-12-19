@@ -46,7 +46,7 @@ int main() {
 
             // Tokenize the PATH into individual directories
             char* dir = strtok(path, ":");
-            printf("%s my log \n" , dir);
+    
             bool found = false;
             while (dir != NULL) {
                 // Construct the full path to the command
