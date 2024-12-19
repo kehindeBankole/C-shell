@@ -55,7 +55,7 @@ int main() {
                 
                 // Check if the file exists and is executable
                 if (access(full_path, X_OK) == 0) {
-                    printf("%s is located at %s\n", argument, full_path);
+                    printf("%s is %s\n", argument, full_path);
                     found = true;
                     break;
                 }
