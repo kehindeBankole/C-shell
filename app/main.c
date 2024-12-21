@@ -23,8 +23,9 @@ int main() {
         // Remove the trailing newline
         input[strlen(input) - 1] = '\0';
         
-        // "exit" command
-        if (!strcmp(input, "exit")) {
+//        printf("%s \n" , input);
+   
+        if (!strcmp(input, "exit 0")) {
             exit(0);
         }
         //  "echo" command
