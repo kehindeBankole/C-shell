@@ -16,24 +16,23 @@ int main() {
         printf("$ ");
         fflush(stdout);
         
-        // Wait for user input
-        char input[200];  // Increased size to handle longer inputs
+    
+        char input[200];
         fgets(input, 200, stdin);
         
         // Remove the trailing newline
         input[strlen(input) - 1] = '\0';
         
-//        printf("%s \n" , input);
-   
+
         if (!strcmp(input, "exit 0")) {
             exit(0);
         }
-        //  "echo" command
+    
         else if (strncmp(input, "echo", strlen("echo")) == 0) {
             // Skip over "echo" and the space
             printf("%s\n", input + strlen("echo") + 1);  // +1 to skip the space
         }
-        //"type" command
+
         else if (strncmp(input, "type", strlen("type")) == 0) {
             // Split the input into command and argument
             char* command = strtok(input, " ");
@@ -58,7 +57,7 @@ int main() {
             }else{
                 
                 
-                // Search for the command in the directories listed in PATH
+                // Search for the command in PATH
                 char* path = getenv("PATH");
                 if (path == NULL) {
                     printf("PATH not set\n");
