@@ -68,27 +68,28 @@ int main() {
                 char* path_copy = strdup(path);
                 if (!path_copy) {
                     perror("strdup");
-                    exit(0);
+                    exit(EXIT_FAILURE);
                 }
                 
-                // Tokenize the PATH into individual directories
+                // break directories
                 char* dir = strtok(path_copy, ":");
                 
                 
                 
                 
                 while (dir != NULL) {
-       
+               
                     char full_path[1024];
                     snprintf(full_path, sizeof(full_path), "%s/%s", dir, argument);
                     
-                    //  file exists and is executable
+                    // Check if the file exists and is executable
                     if (access(full_path, X_OK) == 0) {
                         printf("%s is %s\n", argument, full_path);
                         found = true;
                         break;
                     }
                     
+        
                     dir = strtok(NULL, ":");
                 }
                 
@@ -98,7 +99,7 @@ int main() {
             
             
             
-            // If the command was not found
+   
             if (!found) {
                 printf("%s: not found\n", argument);
             }
