@@ -50,7 +50,7 @@ int main() {
             bool found = false;
             while (dir != NULL) {
                 // Construct the full path to the command
-                char full_path[200];
+                char full_path[1024];
                 snprintf(full_path, sizeof(full_path), "%s/%s", dir, argument);
                 
                 // Check if the file exists and is executable
