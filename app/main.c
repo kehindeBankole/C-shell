@@ -9,7 +9,6 @@ int main() {
     bool canRepeat = true;
     const char* built_in_commands[] = {"exit", "type", "echo"};
     
-    // Calculate the number of elements in the array
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
     
     while (canRepeat) {
