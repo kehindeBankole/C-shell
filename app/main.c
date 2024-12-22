@@ -3,119 +3,120 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 bool includes(const char* string, const char* arr[], int size);
 
 int main() {
     bool canRepeat = true;
     const char* built_in_commands[] = {"exit", "type", "echo"};
-    
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
     
     while (canRepeat) {
         printf("$ ");
         fflush(stdout);
         
-    
         char input[200];
-        fgets(input, 200, stdin);
+        if (!fgets(input, sizeof(input), stdin)) {
+            break; // Handle EOF or input error
+        }
         
         // Remove the trailing newline
         input[strlen(input) - 1] = '\0';
         
-
+        // Handle the "exit" command
         if (!strcmp(input, "exit 0")) {
             exit(0);
         }
-    
+        
+        // Handle the "echo" command
         else if (strncmp(input, "echo", strlen("echo")) == 0) {
-            // Skip over "echo" and the space
-            printf("%s\n", input + strlen("echo") + 1);  // +1 to skip the space
+            printf("%s\n", input + strlen("echo") + 1);
         }
-
+        
+        // Handle the "type" command
         else if (strncmp(input, "type", strlen("type")) == 0) {
-            // Split the input into command and argument
             char* command = strtok(input, " ");
             char* argument = strtok(NULL, " ");
             bool found = false;
             
-            
-            if(includes(argument , built_in_commands , num_commands)){
-                
-                for (int x = 0; x < num_commands; x++) {
-                    
-                    if (strcmp(argument, built_in_commands[x]) == 0) {
-                        found = true;
-                        printf("%s is a shell builtin\n" , argument);
-                        
-                        continue;
-                    }
-                }
-                
+            if (includes(argument, built_in_commands, num_commands)) {
+                printf("%s is a shell builtin\n", argument);
                 continue;
-                
-            }else{
-                
-                
-                // Search for the command in PATH
+            } else {
                 char* path = getenv("PATH");
                 if (path == NULL) {
                     printf("PATH not set\n");
                     continue;
                 }
                 
-                // copy path
                 char* path_copy = strdup(path);
                 if (!path_copy) {
                     perror("strdup");
                     exit(EXIT_FAILURE);
                 }
                 
-                // break directories
                 char* dir = strtok(path_copy, ":");
-                
-                
-                
-                
                 while (dir != NULL) {
-               
                     char full_path[1024];
                     snprintf(full_path, sizeof(full_path), "%s/%s", dir, argument);
                     
-                    // Check if the file exists and is executable
                     if (access(full_path, X_OK) == 0) {
                         printf("%s is %s\n", argument, full_path);
                         found = true;
                         break;
                     }
                     
-        
                     dir = strtok(NULL, ":");
                 }
                 
                 free(path_copy);
-                
             }
             
-            
-            
-   
             if (!found) {
                 printf("%s: not found\n", argument);
             }
-            
-            
         }
         
-        
+        // Handle external commands
         else {
-            printf("%s: command not found\n", input);
+            pid_t pid = fork(); // Create a child process
+
+            if (pid == 0) {
+                // Child process
+                char* args[200]; // Array to store command and arguments
+                int i = 0;
+                
+                // Tokenize the input string
+                char* token = strtok(input, " ");
+                
+                while (token != NULL) {
+                    args[i++] = token;
+                    token = strtok(NULL, " ");
+                }
+                args[i] = NULL; // Null-terminate the argument list
+
+                // Execute the command
+                execvp(args[0], args);
+
+                // If execvp fails, print custom error message
+                fprintf(stderr, "%s: command not found\n", args[0]);
+                exit(EXIT_FAILURE); // Exit with failure code
+            } else if (pid > 0) {
+                // Parent process waits for the child process
+                int status;
+                wait(&status);
+            } else {
+                // fork() failed
+                perror("fork");
+            }
         }
+
     }
     
     return 0;
 }
-
-
 
 bool includes(const char* string, const char* arr[], int size) {
     for (int x = 0; x < size; x++) {
@@ -125,3 +126,4 @@ bool includes(const char* string, const char* arr[], int size) {
     }
     return false; // Not found
 }
+
