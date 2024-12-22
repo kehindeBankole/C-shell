@@ -10,7 +10,7 @@ bool includes(const char* string, const char* arr[], int size);
 
 int main() {
     bool canRepeat = true;
-    const char* built_in_commands[] = {"exit", "type", "echo"};
+    const char* built_in_commands[] = {"exit", "type", "echo" , "pwd"};
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
     
     while (canRepeat) {
@@ -33,6 +33,12 @@ int main() {
         // Handle the "echo" command
         else if (strncmp(input, "echo", strlen("echo")) == 0) {
             printf("%s\n", input + strlen("echo") + 1);
+        }
+        
+        else if (strcmp(input, "pwd") == 0) {
+            char cwd[1024];
+            getcwd(cwd, sizeof(cwd));
+            printf("%s\n", cwd);
         }
         
         // Handle the "type" command
@@ -82,7 +88,7 @@ int main() {
         // Handle external commands
         else {
             pid_t pid = fork(); // Create a child process
-
+            
             if (pid == 0) {
                 // Child process
                 char* args[200]; // Array to store command and arguments
@@ -96,10 +102,10 @@ int main() {
                     token = strtok(NULL, " ");
                 }
                 args[i] = NULL; // Null-terminate the argument list
-
+                
                 // Execute the command
                 execvp(args[0], args);
-
+                
                 // If execvp fails, print custom error message
                 fprintf(stderr, "%s: command not found\n", args[0]);
                 exit(EXIT_FAILURE); // Exit with failure code
@@ -112,7 +118,7 @@ int main() {
                 perror("fork");
             }
         }
-
+        
     }
     
     return 0;
