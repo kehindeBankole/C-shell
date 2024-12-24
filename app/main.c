@@ -10,7 +10,7 @@ bool includes(const char* string, const char* arr[], int size);
 
 int main() {
     bool canRepeat = true;
-    const char* built_in_commands[] = {"exit", "type", "echo" , "pwd"};
+    const char* built_in_commands[] = {"exit", "type", "echo" , "pwd" , "cd"};
     int num_commands = sizeof(built_in_commands) / sizeof(built_in_commands[0]);
     
     while (canRepeat) {
@@ -25,12 +25,12 @@ int main() {
         // Remove the trailing newline
         input[strlen(input) - 1] = '\0';
         
-        // Handle the "exit" command
+        // "exit" command
         if (!strcmp(input, "exit 0")) {
             exit(0);
         }
         
-        // Handle the "echo" command
+        // "echo" command
         else if (strncmp(input, "echo", strlen("echo")) == 0) {
             printf("%s\n", input + strlen("echo") + 1);
         }
@@ -41,7 +41,24 @@ int main() {
             printf("%s\n", cwd);
         }
         
-        // Handle the "type" command
+        // "cd" check
+        else if (strncmp(input, "cd", strlen("cd")) == 0) {
+            
+            char* path = strtok(input, " ");
+            path = strtok(NULL, " ");
+            
+            
+            
+            if (chdir(input + 3) < 0){
+                printf("cd: %s: No such file or directory\n", input + 3);
+             
+            }
+
+            
+            
+        }
+        
+        // "type" command
         else if (strncmp(input, "type", strlen("type")) == 0) {
             char* command = strtok(input, " ");
             char* argument = strtok(NULL, " ");
@@ -87,11 +104,11 @@ int main() {
         
         // Handle external commands
         else {
-            pid_t pid = fork(); // Create a child process
+            pid_t pid = fork(); // create child process
             
             if (pid == 0) {
                 // Child process
-                char* args[200]; // Array to store command and arguments
+                char* args[200]; // array to store command and arguments
                 int i = 0;
                 
                 // Tokenize the input string
@@ -106,7 +123,7 @@ int main() {
                 // Execute the command
                 execvp(args[0], args);
                 
-                // If execvp fails, print custom error message
+                
                 fprintf(stderr, "%s: command not found\n", args[0]);
                 exit(EXIT_FAILURE); // Exit with failure code
             } else if (pid > 0) {
