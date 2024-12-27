@@ -41,23 +41,26 @@ int main() {
             printf("%s\n", cwd);
         }
         
-        // "cd" check
+
         else if (strncmp(input, "cd", strlen("cd")) == 0) {
-            
             char* path = strtok(input, " ");
             path = strtok(NULL, " ");
-            
-            
-            
-            if (chdir(input + 3) < 0){
-                printf("cd: %s: No such file or directory\n", input + 3);
-             
-            }
 
-            
-            
+            if (path == NULL || strcmp(path, "~") == 0) {
+             
+                char* home_dir = getenv("HOME");
+                if (home_dir == NULL) {
+                    fprintf(stderr, "cd: HOME environment variable is not set\n");
+                } else if (chdir(home_dir) < 0) {
+                    perror("cd");
+                }
+            } else {
+          
+                if (chdir(path) < 0) {
+                    fprintf(stderr, "cd: %s: No such file or directory\n", path);
+                }
+            }
         }
-        
         // "type" command
         else if (strncmp(input, "type", strlen("type")) == 0) {
             char* command = strtok(input, " ");
@@ -104,6 +107,7 @@ int main() {
         
         // Handle external commands
         else {
+            printf("%s \n" , "executing");
             pid_t pid = fork(); // create child process
             
             if (pid == 0) {
