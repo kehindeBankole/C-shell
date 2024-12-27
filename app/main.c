@@ -107,7 +107,6 @@ int main() {
         
         // Handle external commands
         else {
-            printf("%s \n" , "executing");
             pid_t pid = fork(); // create child process
             
             if (pid == 0) {
