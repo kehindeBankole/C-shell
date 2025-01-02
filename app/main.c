@@ -5,8 +5,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <ctype.h>
 
+char** parseArguments(const char* input, int* argCount);
 bool includes(const char* string, const char* arr[], int size);
+char* removeQuotes(const char* input);
 
 int main() {
     bool canRepeat = true;
@@ -32,7 +35,8 @@ int main() {
         
         // "echo" command
         else if (strncmp(input, "echo", strlen("echo")) == 0) {
-            printf("%s\n", input + strlen("echo") + 1);
+            //removeQuotes(input + strlen("echo") + 1 );
+            printf("%s\n", removeQuotes(input + strlen("echo") + 1 ));
         }
         
         else if (strcmp(input, "pwd") == 0) {
@@ -106,28 +110,24 @@ int main() {
         }
         
         // Handle external commands
+        
         else {
-            pid_t pid = fork(); // create child process
-            
+            pid_t pid = fork(); // Create child process
+
             if (pid == 0) {
                 // Child process
-                char* args[200]; // array to store command and arguments
-                int i = 0;
-                
-                // Tokenize the input string
-                char* token = strtok(input, " ");
-                
-                while (token != NULL) {
-                    args[i++] = token;
-                    token = strtok(NULL, " ");
-                }
-                args[i] = NULL; // Null-terminate the argument list
-                
+                int argCount = 0;
+                char** args = parseArguments(input, &argCount);
+
                 // Execute the command
                 execvp(args[0], args);
-                
-                
+
                 fprintf(stderr, "%s: command not found\n", args[0]);
+                // Free allocated memory
+                for (int j = 0; j < argCount; j++) {
+                    free(args[j]);
+                }
+                free(args);
                 exit(EXIT_FAILURE); // Exit with failure code
             } else if (pid > 0) {
                 // Parent process waits for the child process
@@ -153,3 +153,81 @@ bool includes(const char* string, const char* arr[], int size) {
     return false; // Not found
 }
 
+
+
+char* removeQuotes(const char* input) {
+    int j = 0;
+    int length = strlen(input);
+    char* output = malloc(length + 1);
+
+    bool in_space = false;
+    bool in_quotes = false;
+
+    for (int i = 0; i < length; i++) {
+        if (input[i] == '"' || input[i] == '\'') {
+          
+            in_quotes = !in_quotes;
+            continue;
+        }
+
+        if (input[i] == ' ' && !in_quotes) {
+            if (!in_space) {
+         
+                output[j++] = ' ';
+                in_space = true;
+            }
+        } else {
+       
+            output[j++] = input[i];
+            in_space = false;
+        }
+    }
+
+    output[j] = '\0';  // Null-terminate the output string
+    return output;
+}
+
+char** parseArguments(const char* input, int* argCount) {
+    char** args = malloc(200 * sizeof(char*)); // space for arguments
+    char* temp = strdup(input); // modifiable copy of the input
+    int i = 0;
+    char* token = temp;
+    bool in_single_quotes = false;
+    bool in_double_quotes = false;
+
+    while (*token) {
+     
+        while (isspace(*token)) token++;
+
+        // Start of an argument
+        char* start = token;
+        while (*token) {
+            if (*token == '\'' && !in_double_quotes) {
+                in_single_quotes = !in_single_quotes;
+            } else if (*token == '"' && !in_single_quotes) {
+                in_double_quotes = !in_double_quotes;
+            } else if (isspace(*token) && !in_single_quotes && !in_double_quotes) {
+                break; // End of the current argument
+            }
+            token++;
+        }
+
+        // Extract the argument
+        size_t length = token - start;
+        char* arg = malloc(length + 1);
+        strncpy(arg, start, length);
+        arg[length] = '\0';
+
+        // Remove surrounding quotes
+        args[i++] = removeQuotes(arg);
+        free(arg);
+
+        if (!*token) break;
+        token++;
+    }
+
+    args[i] = NULL;
+    *argCount = i;
+    free(temp);
+    return args;
+}
